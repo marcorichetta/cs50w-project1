@@ -7,9 +7,14 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from dotenv import load_dotenv
+
 from helpers import login_required
 
 app = Flask(__name__)
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):

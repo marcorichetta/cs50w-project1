@@ -1,4 +1,0 @@
-HOST = ec2-54-83-197-230.compute-1.amazonaws.com
-USER = qtprzbuuaxrcbh
-PSWD = 0b29ee77a4894f95c1b9992d2f913221be2d606a5e9e9d646cbe4a6e25c538d9
-DATABASE_URL = postgres://qtprzbuuaxrcbh:0b29ee77a4894f95c1b9992d2f913221be2d606a5e9e9d646cbe4a6e25c538d9@ec2-54-83-197-230.compute-1.amazonaws.com:5432/dd4stg6g1ivdmq
