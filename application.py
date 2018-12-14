@@ -30,9 +30,12 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
-@login_required
+#@login_required
 def index():
     """ Show search box """
+    rows = db.execute("SELECT * FROM users").fetchall()
+
+    print(rows)
     render_template("layout.html")
 
 @app.route("/login", methods=["GET", "POST"])
