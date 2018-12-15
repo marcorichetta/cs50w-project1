@@ -30,7 +30,7 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
-#@login_required
+@login_required
 def index():
     """ Show search box """
 
@@ -56,15 +56,18 @@ def login():
         elif not request.form.get("password"):
             return ("must provide password", 403)
 
-        # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", {"username": username}).fetchall()
+        # Query database for username (http://zetcode.com/db/sqlalchemy/rawsql/)
+        rows = db.execute("SELECT * FROM users WHERE username = :username",
+                            {"username": username})
+        
+        result = rows.fetchone()
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        if result == None or not check_password_hash(result[2], request.form.get("password")):
             return ("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = result[0]
 
         # Redirect user to home page
         return redirect("/")
@@ -99,9 +102,10 @@ def register():
 
         # Query database for username
         userCheck = db.execute("SELECT * FROM users WHERE username = :username",
-                          username=request.form.get("username"))
-        
-        if len(userCheck) == 1:
+                          {"username":request.form.get("username")}).fetchone()
+
+        # Check if username already exist
+        if userCheck:
             return ("username already exist", 403)
 
         # Ensure password was submitted
@@ -120,9 +124,12 @@ def register():
         hashedPassword = generate_password_hash(request.form.get("password"), method='pbkdf2:sha256', salt_length=8)
         
         # Insert register into DB
-        rows = db.execute("INSERT INTO users (username, hash) VALUES (:username, :password)",
-                            username=request.form.get("username"), 
-                            password=hashedPassword)
+        db.execute("INSERT INTO users (username, hash) VALUES (:username, :password)",
+                            {"username":request.form.get("username"), 
+                             "password":hashedPassword})
+
+        # Commit changes to database
+        db.commit()
 
         # Redirect user to login page
         return redirect("/")
