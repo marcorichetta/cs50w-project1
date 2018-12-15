@@ -33,10 +33,8 @@ db = scoped_session(sessionmaker(bind=engine))
 #@login_required
 def index():
     """ Show search box """
-    rows = db.execute("SELECT * FROM users").fetchall()
 
-    print(rows)
-    render_template("layout.html")
+    return render_template("layout.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
