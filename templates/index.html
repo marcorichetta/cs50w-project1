@@ -1,8 +1,16 @@
 {% extends "layout.html" %}
-{% block title%}
-"Home"
-{% endblock%}
+
+{% block title %}
+    Home
+{% endblock %}
 
 {% block content %}
-<h1>Home</h1>
+    <h2>Search for a book!</h2>
+    <form action="/search" method="GET">
+        <div class="form-group">
+            <input type="text" class="form-control" name="book" autofocus aria-describedby="bookHelp" placeholder="ISBN, Title or Author">
+            <small id="bookHelp" class="form-text text-muted">Example: 0375508325, Cosmos or Carl Sagan</small>
+        </div>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
 {% endblock %}
