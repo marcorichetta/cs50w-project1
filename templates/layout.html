@@ -30,15 +30,16 @@
         </button>
         <div class="navbar-collapse collapse" id="navbarNavDropdown">
             {% if session.user_id %}
-                <ul class="navbar-nav mr-auto mt-2">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 </ul>
-                <ul class="navbar-nav ml-auto mt-2">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">{{ session.user_name }}</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                 </ul>
             {% else %}
-                <ul class="navbar-nav ml-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>                
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link alert-primary" href="/register">Register</a></li>                
                     <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
                 </ul>
             {% endif %}

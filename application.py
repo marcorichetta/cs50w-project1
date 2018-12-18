@@ -68,7 +68,8 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = result[0]
-
+        session["user_name"] = result[1]
+        
         # Redirect user to home page
         return redirect("/")
 
