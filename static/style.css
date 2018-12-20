@@ -11,13 +11,26 @@ main .form-control
     text-align: start;
 }
 
-.flex-container {
+.results-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: baseline;
 }
+
+.book-container {
+    display: flex;
+    justify-content: center;
+}
+
+.form-border {
+    border: darkgoldenrod;
+    border-style: solid;
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
 main
 {
     /* scroll horizontally as needed */

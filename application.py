@@ -162,14 +162,30 @@ def search():
                         author LIKE :query LIMIT 15",
                         {"query": query})
     
+    # Books not founded
     if rows.rowcount == 0:
         return render_template("error.html", message="we can't find books with that id.")
     
+    # Fetch all the results
     books = rows.fetchall()
 
+    return render_template("results.html", books=books)
+
+@app.route("/book/<isbn>", methods=['GET','POST'])
+@login_required
+def book(isbn):
+    """ Take the book ISBN and redirect to his page """
+    
+    row = db.execute("SELECT isbn, title, author, year FROM books WHERE \
+                    isbn = :isbn",
+                    {"isbn": isbn})
+
+    bookInfo = row.fetchall()
+
+    print(bookInfo)
     """ TODO 
     Use Openlibrary Cover API
     http://covers.openlibrary.org/b/isbn/2266079999-M.jpg
     """
 
-    return render_template("results.html", books=books)
+    return render_template("book.html", bookInfo=bookInfo)
