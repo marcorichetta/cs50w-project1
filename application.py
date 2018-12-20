@@ -1,11 +1,13 @@
 import os
 
-from flask import Flask, session, redirect, render_template, request, jsonify
+from flask import Flask, session, redirect, render_template, request, jsonify, flash
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from werkzeug.security import check_password_hash, generate_password_hash
+
+import requests
 
 from helpers import login_required
 
@@ -176,16 +178,67 @@ def search():
 def book(isbn):
     """ Take the book ISBN and redirect to his page """
     
-    row = db.execute("SELECT isbn, title, author, year FROM books WHERE \
-                    isbn = :isbn",
-                    {"isbn": isbn})
+    if request.method == "POST":
+        
+        # Fetch form data
+        user = session["user_id"]
+        rating = request.form.get("rating")
+        comment = request.form.get("comment")
+        
+        # Search book_id by ISBN
+        row = db.execute("SELECT id FROM books WHERE isbn = :isbn",
+                        {"isbn": isbn})
 
-    bookInfo = row.fetchall()
+        # Save id into variable
+        book = row.fetchone() # (id,)
+        book = book[0]
 
-    print(bookInfo)
-    """ TODO 
-    Use Openlibrary Cover API
-    http://covers.openlibrary.org/b/isbn/2266079999-M.jpg
-    """
+        # Convert to save into DB
+        rating = int(rating)
 
-    return render_template("book.html", bookInfo=bookInfo)
+        print(rating, comment, user, book)
+
+        db.execute("INSERT INTO reviews (user_id, book_id, comment, rating) VALUES \
+                    (:user_id, :book_id, :comment, :rating)",
+                    {"user_id": user, 
+                    "book_id": book, 
+                    "comment": comment, 
+                    "rating": rating})
+
+        # Commit transactions to DB and close the connection
+        db.commit()
+
+        flash('Review submitted!', category='info')
+
+        return redirect("/book/" + isbn)
+    
+    # GET request
+    else:
+
+        row = db.execute("SELECT isbn, title, author, year FROM books WHERE \
+                        isbn = :isbn",
+                        {"isbn": isbn})
+
+        bookInfo = row.fetchall()
+
+        """ GOODREADS reviews """
+
+        # Read API key from env variable
+        key = os.getenv("GOODREADS_KEY")
+        
+        # Query the api with key and ISBN as parameters
+        query = requests.get("https://www.goodreads.com/book/review_counts.json",
+                params={"key": key, "isbns": isbn})
+
+        # Convert the response to JSON
+        response = query.json()
+
+        # "Clean" the JSON before passing it to the bookInfo list
+        response = response['books'][0]
+
+        # Append it as the second element on the list. [1]
+        bookInfo.append(response)
+
+        """ Users reviews """
+
+        return render_template("book.html", bookInfo=bookInfo)

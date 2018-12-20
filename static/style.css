@@ -25,7 +25,7 @@ main .form-control
 }
 
 .form-border {
-    border: darkgoldenrod;
+    border-color: #ECDB88;
     border-style: solid;
     border-radius: 1rem;
     padding: 0.5rem;

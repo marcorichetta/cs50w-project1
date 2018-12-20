@@ -12,13 +12,15 @@
 <div class="container results-container">
     
     {% for book in books %}
-        <div class="card" style="width: 12rem">
+        <div class="card border-primary mb-3" style="width: 12rem">
             <div class="card-body">
                 <h4 class="card-title">{{book['title']}}</h4>
                 <h6 class="card-text">{{book['author']}}</h6>
                 <h6 class="card-text">{{book['year']}}</h6>
                 <h6 class="card-text">{{book['isbn']}}</h6>
-                <a href="/book/{{book['isbn']}}" class="card-link">Go to book</a>
+            </div>
+            <div class="card-footer">
+                <a href="/book/{{book['isbn']}}" class="card-link">Go to book page</a>
             </div>
         </div>
     {% endfor %}

@@ -6,32 +6,33 @@
 
 {% block content %}
 
-    {% for book in bookInfo %}
     <div class="row book-container">
         <div class="col-sm-4">
-            <img src="http://covers.openlibrary.org/b/isbn/{{book['isbn']}}-M.jpg" width="130px">    
+            <img src="http://covers.openlibrary.org/b/isbn/{{bookInfo[0]['isbn']}}-M.jpg" width="130px">    
         </div>
         <div class="col-sm-4">
-            <h2>{{book['title']}}</h2>
-            <h5>Author: {{book['author']}}</h5>
-            <h5>Published: {{book['year']}}</h5>
-            <h5>ISBN-10: {{book['isbn']}}</h5>
+            <h1>{{bookInfo[0]['title']}}</h1>
+            <h5>Author: {{bookInfo[0]['author']}}</h5>
+            <h5>Published: {{bookInfo[0]['year']}}</h5>
+            <h5>ISBN-10: {{bookInfo[0]['isbn']}}</h5>
         </div>
 
         <!--GOODREADS REVIEWS -->
         <div class="col-sm-4">
-            <img src="../static/goodreads.jpg" alt="Goodreads" width="200" height="45">
+            <img class="mb-3" src="../static/goodreads.jpg" alt="Goodreads" width="200" height="45">
+            <h5>Nº of Ratings: {{bookInfo[1]['work_ratings_count']}}</h5>
+            <h5>Average Rating: {{bookInfo[1]['average_rating']}}</h5>
         </div>
     </div>
     <div class="dropdown-divider"></div>
     <div>
         <h4 class="alert alert-warning">Users Reviews</h4>
         <h5>Make your own review!</h5>
-        <form action="" method="POST" class="form-border">
+        <form method="POST" class="form-border">
             <div class="form-row">
                 <div class="form-group col-sm">
                     <label for="rating">Rate this book</label>
-                    <select id="rating" class="form-control" required>
+                    <select id="rating" name="rating" class="form-control" required>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option selected value="3">3</option>
@@ -44,8 +45,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Say something</span>
                         </div>
-                        <textarea name="reviewText" id="reviewText" class="form-control" 
-                            cols="30" rows="1" placeholder="Really interesting book.">
+                        <textarea name="comment" id="comment" class="form-control" 
+                            cols="30" rows="1" required>
                         </textarea>
                     </div>
                 </div>
@@ -58,14 +59,7 @@
         <!-- USERS REVIEWS -->
 
         <div id="userReviews">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Morbi leo risus</li>
-                <li class="list-group-item">Porta ac consectetur ac</li>
-                <li class="list-group-item">Vestibulum at eros</li>
-            </ul>
+            <h2>TODO</h2>
         </div>
     </div>
-    {% endfor %}
 {% endblock %}
