@@ -180,6 +180,10 @@ def book(isbn):
     
     if request.method == "POST":
         
+        """ TODO 
+        Same user can't submit more than 1 review
+        """
+
         # Fetch form data
         user = session["user_id"]
         rating = request.form.get("rating")
@@ -241,4 +245,24 @@ def book(isbn):
 
         """ Users reviews """
 
-        return render_template("book.html", bookInfo=bookInfo)
+        """ TODO 
+        Select all the reviews and pass them to the page.
+        """
+         # Search book_id by ISBN
+        row = db.execute("SELECT id FROM books WHERE isbn = :isbn",
+                        {"isbn": isbn})
+
+        # Save id into variable
+        book = row.fetchone() # (id,)
+        book = book[0]
+
+        # Fetch book reviews
+        results = db.execute("SELECT id, user_id, comment, rating, time FROM reviews WHERE \
+                    book_id = :book",
+                    {"book": book})
+
+        reviews = results.fetchall()
+
+        print(reviews)
+
+        return render_template("book.html", bookInfo=bookInfo, reviews=reviews)
