@@ -22,12 +22,18 @@
             <img class="mb-3" src="../static/goodreads.jpg" alt="Goodreads" width="200" height="45">
             <h5>Nº of Ratings: {{bookInfo[1]['work_ratings_count']}}</h5>
             <h5>Average Rating: {{bookInfo[1]['average_rating']}}</h5>
+            <h5>
+                <a href="https://www.goodreads.com/search?q={{bookInfo[0]['title']}}">Goodreads page</a>
+            </h5>
         </div>
     </div>
     <div class="dropdown-divider"></div>
+
+    <h4 class="alert alert-warning">Users Reviews</h4>
+    <h5>Make your own review!</h5>
+
     <div>
-        <h4 class="alert alert-warning">Users Reviews</h4>
-        <h5>Make your own review!</h5>
+        <!-- REVIEW FORM -->
         <form method="POST" class="form-border">
             <div class="form-row">
                 <div class="form-group col-sm">
@@ -45,8 +51,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Say something</span>
                         </div>
-                        <textarea name="comment" id="comment" class="form-control" 
-                            cols="30" rows="1" required>
+                        <textarea name="comment" id="comment" class="form-control" rows="1" required>
                         </textarea>
                     </div>
                 </div>
@@ -56,10 +61,22 @@
             </div>
         </form>
 
-        <!-- USERS REVIEWS -->
-
+        <!-- REVIEW LIST -->
         <div id="userReviews">
-            <h2>TODO</h2>
+            <h2></h2>
+            {% for review in reviews %}
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">{{review['username']}} said...</h6>
+                        <small>{{review['time']}}</small>
+                    </div>
+                    <p class="mb-1">{{review['comment']}}</p>
+                    <small>Rated: {{review['rating']}}</small>
+                </a>
+                <div class="dropdown-divider"></div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

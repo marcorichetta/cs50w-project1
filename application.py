@@ -166,7 +166,7 @@ def search():
     
     # Books not founded
     if rows.rowcount == 0:
-        return render_template("error.html", message="we can't find books with that id.")
+        return render_template("error.html", message="we can't find books with that description.")
     
     # Fetch all the results
     books = rows.fetchall()
@@ -176,8 +176,8 @@ def search():
 @app.route("/book/<isbn>", methods=['GET','POST'])
 @login_required
 def book(isbn):
-    """ Take the book ISBN and redirect to his page """
-    
+    """ Save user review and load same page with reviews updated."""
+
     if request.method == "POST":
         
         """ TODO 
@@ -216,7 +216,7 @@ def book(isbn):
 
         return redirect("/book/" + isbn)
     
-    # GET request
+    # Take the book ISBN and redirect to his page (GET)
     else:
 
         row = db.execute("SELECT isbn, title, author, year FROM books WHERE \
@@ -257,9 +257,15 @@ def book(isbn):
         book = book[0]
 
         # Fetch book reviews
-        results = db.execute("SELECT id, user_id, comment, rating, time FROM reviews WHERE \
-                    book_id = :book",
-                    {"book": book})
+        # Date formatting (https://www.postgresql.org/docs/9.1/functions-formatting.html)
+        results = db.execute("SELECT users.username, comment, rating, \
+                            to_char(time, 'DD Mon YY - HH24:MI:SS') as time \
+                            FROM users \
+                            INNER JOIN reviews \
+                            ON users.id = reviews.user_id \
+                            WHERE book_id = :book \
+                            ORDER BY time",
+                            {"book": book})
 
         reviews = results.fetchall()
 
