@@ -135,8 +135,10 @@ def register():
         # Commit changes to database
         db.commit()
 
+        flash('Account created', 'info')
+
         # Redirect user to login page
-        return redirect("/")
+        return redirect("/login")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -179,13 +181,11 @@ def book(isbn):
     """ Save user review and load same page with reviews updated."""
 
     if request.method == "POST":
-        
-        """ TODO 
-        Same user can't submit more than 1 review
-        """
 
+        # Save current user info
+        currentUser = session["user_id"]
+        
         # Fetch form data
-        user = session["user_id"]
         rating = request.form.get("rating")
         comment = request.form.get("comment")
         
@@ -194,23 +194,34 @@ def book(isbn):
                         {"isbn": isbn})
 
         # Save id into variable
-        book = row.fetchone() # (id,)
-        book = book[0]
+        bookId = row.fetchone() # (id,)
+        bookId = bookId[0]
+
+        # Check for user submission (ONLY 1 review/user allowed per book)
+        row2 = db.execute("SELECT * FROM reviews WHERE user_id = :user_id AND book_id = :book_id",
+                    {"user_id": currentUser,
+                     "book_id": bookId})
+
+        # A review already exists
+        if row2.rowcount == 1:
+            
+            flash('You already submitted a review for this book', 'warning')
+            return redirect("/book/" + isbn)
 
         # Convert to save into DB
         rating = int(rating)
 
         db.execute("INSERT INTO reviews (user_id, book_id, comment, rating) VALUES \
                     (:user_id, :book_id, :comment, :rating)",
-                    {"user_id": user, 
-                    "book_id": book, 
+                    {"user_id": currentUser, 
+                    "book_id": bookId, 
                     "comment": comment, 
                     "rating": rating})
 
         # Commit transactions to DB and close the connection
         db.commit()
 
-        flash('Review submitted!', category='info')
+        flash('Review submitted!', 'info')
 
         return redirect("/book/" + isbn)
     
@@ -264,8 +275,6 @@ def book(isbn):
 
         reviews = results.fetchall()
 
-        print(reviews)
-
         return render_template("book.html", bookInfo=bookInfo, reviews=reviews)
 
 @app.route("/api/<isbn>", methods=['GET'])
@@ -278,7 +287,7 @@ def api_call(isbn):
 
     row = db.execute("SELECT title, author, year, isbn, \
                     COUNT(reviews.id) as review_count, \
-                    SUM(reviews.rating) as average_score \
+                    AVG(reviews.rating) as average_score \
                     FROM books \
                     INNER JOIN reviews \
                     ON books.id = reviews.book_id \
@@ -292,7 +301,8 @@ def api_call(isbn):
     # Convert to dict
     result = dict(tmp.items())
 
-    # Update Avg Score
-    result['average_score'] /= result['review_count']
+    # Round Avg Score to 2 decimal. This returns a string which does not meet the requirement.
+    # https://floating-point-gui.de/languages/python/
+    result['average_score'] = float('%.2f'%(result['average_score']))
 
     return jsonify(result)

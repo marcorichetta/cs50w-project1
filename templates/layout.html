@@ -47,7 +47,7 @@
     </nav>
 
     {% if get_flashed_messages() %}
-        <div class="alert alert-success text-center" role="alert">
+        <div class="alert alert-info text-center" role="alert">
             {{ get_flashed_messages() | join(" ") }}
         </div>
     {% endif %}

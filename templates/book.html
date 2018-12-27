@@ -51,8 +51,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Say something</span>
                         </div>
-                        <textarea name="comment" id="comment" class="form-control" rows="1" required>
-                        </textarea>
+                        <textarea name="comment" id="comment" class="form-control" rows="1" required></textarea>
                     </div>
                 </div>
                 <div class="form-group col-sm">
@@ -68,7 +67,7 @@
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-between">
-                        <h6 class="mb-1">{{review['username']}} said...</h6>
+                        <h6 class="mb-1" style="color:burlywood">{{review['username']}} said...</h6>
                         <small>{{review['time']}}</small>
                     </div>
                     <p class="mb-1">{{review['comment']}}</p>
