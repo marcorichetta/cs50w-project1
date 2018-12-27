@@ -2,20 +2,25 @@
 
 Web Programming with Python and JavaScript
 
-## :gear: Instalación
+## :gear: Setup
 
 ```bash
-# clonar el repositorio
+# Clone repo
 $ git clone https://github.com/marcorichetta/cs50-project1.git
 
 $ cd cs50-project1
 
-# Crear un virtualenv (Opcional)
-$ python3 -m venv mivirtualenv -> Nombre del virtualenv
+# Create a virtualenv (Optional but reccomended)
+$ python3 -m venv myvirtualenv -> Nombre del virtualenv
 
-# Activamos el virtualenv
-$ source mivirtualenv/bin/activate (Linux)
+# Activate the virtualenv
+$ source myvirtualenv/bin/activate (Linux)
 
-# Instalar las dependencias
+# Install all dependencies
 $ pip install -r requirements.txt
+
+# ENV Variables
+$ export FLASK_APP = application.py # flask run
+$ export DATABASE_URL = Heroku Postgres DB URI
+$ export GOODREADS_KEY = Goodreads API Key. # More info: https://www.goodreads.com/api
 ```
