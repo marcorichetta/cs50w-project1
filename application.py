@@ -1,4 +1,4 @@
-import os
+import os, json
 
 from flask import Flask, session, redirect, render_template, request, jsonify, flash
 from flask_session import Session
@@ -52,11 +52,11 @@ def login():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return ("must provide username", 400)
+            return render_template("error.html", message="must provide username")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return ("must provide password", 400)
+            return render_template("error.html", message="must provide password")
 
         # Query database for username (http://zetcode.com/db/sqlalchemy/rawsql/)
         # https://docs.sqlalchemy.org/en/latest/core/connections.html#sqlalchemy.engine.ResultProxy
@@ -67,7 +67,7 @@ def login():
 
         # Ensure username exists and password is correct
         if result == None or not check_password_hash(result[2], request.form.get("password")):
-            return ("invalid username and/or password", 400)
+            return render_template("error.html", message="invalid username and/or password")
 
         # Remember which user has logged in
         session["user_id"] = result[0]
@@ -102,7 +102,7 @@ def register():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return ("must provide username", 400)
+            return render_template("error.html", message="must provide username")
 
         # Query database for username
         userCheck = db.execute("SELECT * FROM users WHERE username = :username",
@@ -110,19 +110,19 @@ def register():
 
         # Check if username already exist
         if userCheck:
-            return ("username already exist", 400)
+            return render_template("error.html", message="username already exist")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return ("must provide password", 400)
+            return render_template("error.html", message="must provide password")
 
         # Ensure confirmation wass submitted 
         elif not request.form.get("confirmation"):
-            return ("must confirm password", 400)
+            return render_template("error.html", message="must confirm password")
 
         # Check passwords are equal
         elif not request.form.get("password") == request.form.get("confirmation"):
-            return ("passwords didn't match", 400)
+            return render_template("error.html", message="passwords didn't match")
         
         # Hash user's password to store in DB
         hashedPassword = generate_password_hash(request.form.get("password"), method='pbkdf2:sha256', salt_length=8)
@@ -200,8 +200,6 @@ def book(isbn):
         # Convert to save into DB
         rating = int(rating)
 
-        print(rating, comment, user, book)
-
         db.execute("INSERT INTO reviews (user_id, book_id, comment, rating) VALUES \
                     (:user_id, :book_id, :comment, :rating)",
                     {"user_id": user, 
@@ -245,9 +243,6 @@ def book(isbn):
 
         """ Users reviews """
 
-        """ TODO 
-        Select all the reviews and pass them to the page.
-        """
          # Search book_id by ISBN
         row = db.execute("SELECT id FROM books WHERE isbn = :isbn",
                         {"isbn": isbn})
@@ -272,3 +267,32 @@ def book(isbn):
         print(reviews)
 
         return render_template("book.html", bookInfo=bookInfo, reviews=reviews)
+
+@app.route("/api/<isbn>", methods=['GET'])
+@login_required
+def api_call(isbn):
+
+    # COUNT returns rowcount
+    # SUM returns sum selected cells' values
+    # INNER JOIN associates books with reviews tables
+
+    row = db.execute("SELECT title, author, year, isbn, \
+                    COUNT(reviews.id) as review_count, \
+                    SUM(reviews.rating) as average_score \
+                    FROM books \
+                    INNER JOIN reviews \
+                    ON books.id = reviews.book_id \
+                    WHERE isbn = :isbn \
+                    GROUP BY title, author, year, isbn",
+                    {"isbn": isbn})
+
+    # Fetch result from RowProxy    
+    tmp = row.fetchone()
+
+    # Convert to dict
+    result = dict(tmp.items())
+
+    # Update Avg Score
+    result['average_score'] /= result['review_count']
+
+    return jsonify(result)
