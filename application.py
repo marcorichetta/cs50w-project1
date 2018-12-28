@@ -295,6 +295,10 @@ def api_call(isbn):
                     GROUP BY title, author, year, isbn",
                     {"isbn": isbn})
 
+    # Error checking
+    if row.rowcount != 1:
+        return jsonify({"Error": "Invalid book ISBN"}), 422
+
     # Fetch result from RowProxy    
     tmp = row.fetchone()
 
