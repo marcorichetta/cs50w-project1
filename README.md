@@ -2,6 +2,15 @@
 
 Web Programming with Python and JavaScript
 
+![](https://i.imgur.com/mB3cLV1.png)
+
+
+![](https://i.imgur.com/MgO93MJ.png)
+
+
+![](https://i.imgur.com/Zy7C3Oq.png)
+
+
 ## :gear: Setup
 
 ```bash
@@ -11,7 +20,7 @@ $ git clone https://github.com/marcorichetta/cs50-project1.git
 $ cd cs50-project1
 
 # Create a virtualenv (Optional but reccomended)
-$ python3 -m venv myvirtualenv -> Nombre del virtualenv
+$ python3 -m venv myvirtualenv
 
 # Activate the virtualenv
 $ source myvirtualenv/bin/activate (Linux)
