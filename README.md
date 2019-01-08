@@ -10,6 +10,11 @@ Web Programming with Python and JavaScript
 
 ![](https://i.imgur.com/Zy7C3Oq.png)
 
+## Usage
+
+* Register
+* Search books by name, author or ISBN
+* Get info about a book and submit your own review!
 
 ## :gear: Setup
 
