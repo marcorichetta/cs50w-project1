@@ -1,6 +1,11 @@
-# Project 1
+# CS50W Project 1
 
-Web Programming with Python and JavaScript
+## Web Programming with Python and JavaScript
+### https://courses.edx.org/courses/course-v1:HarvardX+CS50W+Web/course/
+
+## Use the app on Heroku
+
+### https://book-reviews-cs50-project1.herokuapp.com/
 
 ![](https://i.imgur.com/mB3cLV1.png)
 
@@ -16,7 +21,7 @@ Web Programming with Python and JavaScript
 * Search books by name, author or ISBN
 * Get info about a book and submit your own review!
 
-## :gear: Setup
+## :gear: Setup your own
 
 ```bash
 # Clone repo
